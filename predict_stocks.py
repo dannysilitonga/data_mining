@@ -8,12 +8,13 @@ import streamlit as st
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.model_selection import GridSearchCV, train_test_split
 
-PATH = './data/'
 
 # Get Data 
-def get_data(PATH, stock_filename, sp500_filename):
-    all_stocks = pd.read_csv(PATH + stock_filename)
-    sector = pd.read_csv(PATH + sp500_filename)
+def get_data(stock_filename, sp500_filename):
+    all_stocks = pd.read_csv(stock_filename)
+    print(all_stocks.head())
+    sector = pd.read_csv(sp500_filename)
+    print(sector.head())
     all_stocks  = all_stocks.merge(sector[['Symbol', 'Sector']], how='left', on='Symbol')
     return all_stocks 
 
@@ -126,6 +127,18 @@ def create_viz(data):
     
 
 if __name__ == "__main__":
+    SP_500_URL = "https://drive.google.com/file/d/1-6QEipRs8-pFCrWgxEU53tsCawhjiA6e/view?usp=share_link"
+
+    SP_500_COMP_URL = "https://drive.google.com/file/d/1-DGBB65v4V3AhNGXcjJOiet_Jix6ewjc/view?usp=share_link"
+    URL = 'https://drive.google.com/uc?id=' 
+    print(URL+SP_500_URL.split('/')[-2])
+    print(URL+SP_500_COMP_URL.split('/')[-2])
+
+    data = get_data(URL+SP_500_URL.split('/')[-2], URL+SP_500_COMP_URL.split('/')[-2])
+
+    print(data.head())
+    
+    # PATH = './data/'
     # data = get_data(PATH, "sp500_stocks.csv", "sp500_companies.csv")
     # all_stocks = add_sector(data)
     # all_stocks = calculate_returns(all_stocks)
@@ -137,5 +150,5 @@ if __name__ == "__main__":
     # all_stocks = add_technical_analysis(all_stocks)
     # shaps = combine_shap_values(all_stocks)
     # save_shap_values(shaps)
-    shaps = pd.read_pickle(PATH + 'shaps.pickle', compression='infer')
-    create_viz(shaps)
+    # shaps = pd.read_pickle(PATH + 'shaps.pickle', compression='infer')
+    # create_viz(shaps)
