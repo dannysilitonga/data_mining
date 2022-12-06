@@ -4,6 +4,7 @@ import ta
 import shap
 import pickle
 import xgboost as xgb
+import streamlit as st
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.model_selection import GridSearchCV, train_test_split
 
@@ -118,23 +119,23 @@ def save_shap_values(shaps):
     with open(PATH + 'shaps.pickle', 'wb') as f:
         pickle.dump(shaps, f)
 
-def create_stacked_bar_chart():
-    output_transposed.plot(x='index', kind='bar', stacked=True,
-        title="SHAP Values for 10 Day Period")
-
-
+def create_viz(data):
+    data['index'] = ['D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', 'D8', 'D9', 'D_10']
+    st.title("""SHAP Values for 10 Day Forecast Period""")
+    st.bar_chart(data, x='index')
+    
 
 if __name__ == "__main__":
-    data = get_data(PATH, "sp500_stocks.csv", "sp500_companies.csv")
-    all_stocks = add_sector(data)
-    all_stocks = calculate_returns(all_stocks)
-    all_stocks = implement_lags(all_stocks)
-    all_stocks = transform_sector(all_stocks)
-    all_stocks = add_exponential_smoothing(all_stocks)
-    all_stocks = normalize_vol(all_stocks)
-    all_stocks = create_zscores(all_stocks)
-    all_stocks = add_technical_analysis(all_stocks)
-    shaps = combine_shap_values(all_stocks)
-    save_shap_values(shaps)
-    # print(shaps)
-    # print(all_stocks.iloc[0]) #tail(n=20))
+    # data = get_data(PATH, "sp500_stocks.csv", "sp500_companies.csv")
+    # all_stocks = add_sector(data)
+    # all_stocks = calculate_returns(all_stocks)
+    # all_stocks = implement_lags(all_stocks)
+    # all_stocks = transform_sector(all_stocks)
+    # all_stocks = add_exponential_smoothing(all_stocks)
+    # all_stocks = normalize_vol(all_stocks)
+    # all_stocks = create_zscores(all_stocks)
+    # all_stocks = add_technical_analysis(all_stocks)
+    # shaps = combine_shap_values(all_stocks)
+    # save_shap_values(shaps)
+    shaps = pd.read_pickle(PATH + 'shaps.pickle', compression='infer')
+    create_viz(shaps)
